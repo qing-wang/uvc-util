@@ -40,7 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3B79C7751D245EAD004A5C35 /* uvc-util */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "uvc-util"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B79C7751D245EAD004A5C35 /* uvc-util.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "uvc-util.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B79C7801D245ED5004A5C35 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		3B7C3E1B1D2C384100122FB8 /* uvc-util-10_9 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "uvc-util-10_9"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BB7CF871D2ED005009D6F42 /* uvc-util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "uvc-util.m"; path = "src/uvc-util.m"; sourceTree = SOURCE_ROOT; };
@@ -83,7 +83,7 @@
 		3B79C7761D245EAD004A5C35 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3B79C7751D245EAD004A5C35 /* uvc-util */,
+				3B79C7751D245EAD004A5C35 /* uvc-util.a */,
 				3B7C3E1B1D2C384100122FB8 /* uvc-util-10_9 */,
 			);
 			name = Products;
@@ -129,7 +129,7 @@
 			);
 			name = "uvc-util";
 			productName = "uvc-util";
-			productReference = 3B79C7751D245EAD004A5C35 /* uvc-util */;
+			productReference = 3B79C7751D245EAD004A5C35 /* uvc-util.a */;
 			productType = "com.apple.product-type.tool";
 		};
 		3B7C3E1A1D2C384100122FB8 /* uvc-util-10_9 */ = {
@@ -171,6 +171,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 3B79C76C1D245EAD004A5C35;
@@ -295,7 +296,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MACH_O_TYPE = staticlib;
+				PRODUCT_NAME = "$(TARGET_NAME).a";
 			};
 			name = Debug;
 		};
@@ -303,7 +305,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MACH_O_TYPE = staticlib;
+				PRODUCT_NAME = "$(TARGET_NAME).a";
 			};
 			name = Release;
 		};

@@ -278,6 +278,7 @@ UVCUtilGetControllerWithLocationId(
 
 //
 
+#if false
 int
 main(
   int               argc,
@@ -709,3 +710,4 @@ cleanupAndExit:
   if ( uvcDevices ) [uvcDevices release];
   return rc;
 }
+#endif
