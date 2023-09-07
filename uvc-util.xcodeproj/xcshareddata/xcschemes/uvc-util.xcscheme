@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3B79C7741D245EAD004A5C35"
-               BuildableName = "uvc-util"
+               BuildableName = "uvc-util.a"
                BlueprintName = "uvc-util"
                ReferencedContainer = "container:uvc-util.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3B79C7741D245EAD004A5C35"
-            BuildableName = "uvc-util"
+            BuildableName = "uvc-util.a"
             BlueprintName = "uvc-util"
             ReferencedContainer = "container:uvc-util.xcodeproj">
          </BuildableReference>
@@ -68,7 +68,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3B79C7741D245EAD004A5C35"
-            BuildableName = "uvc-util"
+            BuildableName = "uvc-util.a"
             BlueprintName = "uvc-util"
             ReferencedContainer = "container:uvc-util.xcodeproj">
          </BuildableReference>
