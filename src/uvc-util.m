@@ -336,8 +336,8 @@ int UVCUtilGetControlValue(int deviceIndex, const char *controlName, char *value
         return -4;
     }
     strcpy(valueBuf, [[currentValue stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
-    [currentValue release];
-    [control release];
+    //[currentValue release];
+    //[control release];
     return 0;
 }
 
@@ -371,7 +371,7 @@ int UVCUtilSetControlValue(int deviceIndex, const char *controlName, char *value
         [control release];
         return -6;
     }
-    [control release];
+    //[control release];
     return 0;
 }
 
