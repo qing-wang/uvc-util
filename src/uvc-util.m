@@ -278,14 +278,24 @@ UVCUtilGetControllerWithLocationId(
 
 // Add By Qing
 
+NSArray *g_uvcDevices = NULL;
+
+void CreateUVCDevicesIfNecessary(void)
+{
+    if( g_uvcDevices == NULL )
+    {
+        g_uvcDevices = [[UVCController uvcControllers] retain];
+    }
+}
+
 int UVCUtilFindDeviceIndexByName(const char *deviceName)
 {
-    NSArray           *uvcDevices = [[UVCController uvcControllers] retain];
+    CreateUVCDevicesIfNecessary();
     //
     unsigned long   deviceIndex = -1;
-    if ( uvcDevices && [uvcDevices count] )
+    if ( g_uvcDevices && [g_uvcDevices count] )
     {
-        NSEnumerator    *eDevices = [uvcDevices objectEnumerator];
+        NSEnumerator    *eDevices = [g_uvcDevices objectEnumerator];
         UVCController   *device;
         //
         for(int i=0;(device = [eDevices nextObject]);i++)
@@ -297,80 +307,71 @@ int UVCUtilFindDeviceIndexByName(const char *deviceName)
                 break;
             }
         }
-        [uvcDevices release];
     }
     return (int) deviceIndex;
 }
 
 int UVCUtilGetControlValue(int deviceIndex, const char *controlName, char *valueBuf)
 {
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
+    CreateUVCDevicesIfNecessary();
     //
-    if( !uvcDevices )
+    if( !g_uvcDevices )
         return -1;
-    if( deviceIndex >= [uvcDevices count]  )
+    if( deviceIndex >= [g_uvcDevices count]  )
         return -2;
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     if( !targetDevice )
     {
-        [uvcDevices release];
         return -3;
     }
     UVCControl *control = [targetDevice controlWithName:[NSString stringWithCString:controlName encoding:NSASCIIStringEncoding]];
     if( !control )
     {
-        [uvcDevices release];
         return -4;
     }
     UVCValue *currentValue = [control currentValue];
     if( !currentValue )
     {
         [control release];
-        [uvcDevices release];
         return -4;
     }
     strcpy(valueBuf, [[currentValue stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
     [currentValue release];
     [control release];
-    [uvcDevices release];
     return 0;
 }
 
 int UVCUtilSetControlValue(int deviceIndex, const char *controlName, char *valuePtr)
 {
     UVCTypeScanFlags  uvcScanFlags = kUVCTypeScanFlagShowWarnings;
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
     //
-    if( !uvcDevices )
+    CreateUVCDevicesIfNecessary();
+    //
+    if( !g_uvcDevices )
         return -1;
-    if( deviceIndex >= [uvcDevices count]  )
+    if( deviceIndex >= [g_uvcDevices count]  )
         return -2;
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     if( !targetDevice )
     {
-        [uvcDevices release];
         return -3;
     }
     UVCControl *control = [targetDevice controlWithName:[NSString stringWithCString:controlName encoding:NSASCIIStringEncoding]];
     if( !control )
     {
-        [uvcDevices release];
         return -4;
     }
     if( ![control setCurrentValueFromCString:valuePtr flags:uvcScanFlags] )
     {
         [control release];
-        [uvcDevices release];
         return -5;
     }
     if( ![control writeFromCurrentValue] )
     {
         [control release];
-        [uvcDevices release];
         return -6;
     }
     [control release];
-    [uvcDevices release];
     return 0;
 }
 
