@@ -369,6 +369,58 @@ int UVCUtilSetControlValue(int deviceIndex, const char *controlName, char *value
     return 0;
 }
 
+#define UVC_SET_CUR   0x01
+#define UVC_GET_CUR   0x81
+
+BOOL UVCUtilWriteExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packet, int packetLen)
+{
+    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
+    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    //
+    IOUSBDevRequest controlRequest = {
+                        .bmRequestType = USBmakebmRequestType(kUSBOut, kUSBClass, kUSBInterface),
+                        .bRequest = UVC_SET_CUR,
+                        .wValue = bControlId << 8,
+                        .wIndex = bUnitId << 8,
+                        .wLength = packetLen,
+                        .wLenDone = 0,
+                        .pData = packet
+                      };
+    return [targetDevice sendUSBControlRequest:controlRequest];
+}
+
+BOOL UVCUtilReadExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packetBuf, int packetBufLen)
+{
+    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
+    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    //
+    IOUSBDevRequest controlRequest = {
+                        .bmRequestType = USBmakebmRequestType(kUSBIn, kUSBClass, kUSBInterface),
+                        .bRequest = UVC_GET_CUR,
+                        .wValue = bControlId << 8,
+                        .wIndex = bUnitId << 8,
+                        .wLength = packetBufLen,
+                        .pData = packetBuf
+                      };
+    return [targetDevice sendUSBControlRequest:controlRequest];
+}
+
+int UVCUtilReadPixioButtonStatus(int deviceIndex)
+{
+    unsigned char packet[8] = { 0x80, 0x02, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    unsigned char packet2[8] = { 0x80, 0x04, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    unsigned char packetBuf[8];
+    //
+    if( UVCUtilWriteExtensionUnit(deviceIndex, 0x01, 0x06, packet, 8) == FALSE )
+        return -1;
+    if( UVCUtilWriteExtensionUnit(deviceIndex, 0x01, 0x06, packet2, 8) == FALSE )
+        return -1;
+    memset(packetBuf, 0, 8);
+    if( UVCUtilReadExtensionUnit(deviceIndex, 0x02, 0x06, packetBuf, 8) == FALSE )
+        return -1;
+    return packetBuf[2];
+}
+
 #if false
 int
 main(

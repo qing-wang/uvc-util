@@ -1351,6 +1351,11 @@ uvc_control_t     UVCControllerControls[] = {
     return theControl;
   }
 
+  - (BOOL) sendUSBControlRequest:(IOUSBDevRequest)controlRequest
+  {
+      return [self sendControlRequest:controlRequest];
+  }
+
 @end
 
 //

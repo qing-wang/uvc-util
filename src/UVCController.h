@@ -178,6 +178,9 @@
 */
 - (UVCControl*) controlWithName:(NSString*)controlName;
 
+// Add By Qing
+- (BOOL) sendUSBControlRequest:(IOUSBDevRequest)controlRequest;
+
 @end
 
 /*!
