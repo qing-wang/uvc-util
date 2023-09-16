@@ -278,14 +278,17 @@ UVCUtilGetControllerWithLocationId(
 
 // Add By Qing
 
+NSArray *g_uvcDevices = NULL;
+
 int UVCUtilFindDeviceIndexByName(const char *deviceName)
 {
-    NSArray           *uvcDevices = [[UVCController uvcControllers] retain];
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
     //
     unsigned long   deviceIndex = -1;
-    if ( uvcDevices && [uvcDevices count] )
+    if ( g_uvcDevices && [g_uvcDevices count] )
     {
-        NSEnumerator    *eDevices = [uvcDevices objectEnumerator];
+        NSEnumerator    *eDevices = [g_uvcDevices objectEnumerator];
         UVCController   *device;
         //
         for(int i=0;(device = [eDevices nextObject]);i++)
@@ -297,85 +300,82 @@ int UVCUtilFindDeviceIndexByName(const char *deviceName)
                 break;
             }
         }
-        [uvcDevices release];
     }
     return (int) deviceIndex;
 }
 
 int UVCUtilGetControlValue(int deviceIndex, const char *controlName, char *valueBuf)
 {
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
     //
-    if( !uvcDevices )
+    if( !g_uvcDevices )
         return -1;
-    if( deviceIndex >= [uvcDevices count]  )
+    if( deviceIndex >= [g_uvcDevices count]  )
         return -2;
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     if( !targetDevice )
     {
-        [uvcDevices release];
         return -3;
     }
     UVCControl *control = [targetDevice controlWithName:[NSString stringWithCString:controlName encoding:NSASCIIStringEncoding]];
     if( !control )
     {
-        [uvcDevices release];
         return -4;
     }
     UVCValue *currentValue = [control currentValue];
     if( !currentValue )
     {
-        [uvcDevices release];
         return -4;
     }
     strcpy(valueBuf, [[currentValue stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
     [currentValue release];
-    [uvcDevices release];
     return 0;
 }
 
 int UVCUtilSetControlValue(int deviceIndex, const char *controlName, char *valuePtr)
 {
     UVCTypeScanFlags  uvcScanFlags = kUVCTypeScanFlagShowWarnings;
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
     //
-    if( !uvcDevices )
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
+    //
+    if( !g_uvcDevices )
         return -1;
-    if( deviceIndex >= [uvcDevices count]  )
+    if( deviceIndex >= [g_uvcDevices count]  )
         return -2;
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     if( !targetDevice )
     {
-        [uvcDevices release];
         return -3;
     }
     UVCControl *control = [targetDevice controlWithName:[NSString stringWithCString:controlName encoding:NSASCIIStringEncoding]];
     if( !control )
     {
-        [uvcDevices release];
         return -4;
     }
     if( ![control setCurrentValueFromCString:valuePtr flags:uvcScanFlags] )
     {
-        [uvcDevices release];
         return -5;
     }
     if( ![control writeFromCurrentValue] )
     {
-        [uvcDevices release];
         return -6;
     }
-    [uvcDevices release];
     return 0;
 }
 
 #define UVC_SET_CUR   0x01
 #define UVC_GET_CUR   0x81
 
+#import "sys/time.h"
+
 BOOL UVCUtilWriteExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packet, int packetLen)
 {
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
+    //
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     //
     IOUSBDevRequest controlRequest = {
                         .bmRequestType = USBmakebmRequestType(kUSBOut, kUSBClass, kUSBInterface),
@@ -391,8 +391,9 @@ BOOL UVCUtilWriteExtensionUnit(int deviceIndex, int bControlId, int bUnitId, uns
 
 BOOL UVCUtilReadExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packetBuf, int packetBufLen)
 {
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     //
     IOUSBDevRequest controlRequest = {
                         .bmRequestType = USBmakebmRequestType(kUSBIn, kUSBClass, kUSBInterface),
