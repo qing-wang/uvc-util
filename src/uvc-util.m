@@ -372,9 +372,10 @@ int UVCUtilSetControlValue(int deviceIndex, const char *controlName, char *value
 
 BOOL UVCUtilWriteExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packet, int packetLen)
 {
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];;
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
     //
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     //
     IOUSBDevRequest controlRequest = {
                         .bmRequestType = USBmakebmRequestType(kUSBOut, kUSBClass, kUSBInterface),
@@ -390,11 +391,10 @@ BOOL UVCUtilWriteExtensionUnit(int deviceIndex, int bControlId, int bUnitId, uns
 
 BOOL UVCUtilReadExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packetBuf, int packetBufLen)
 {
-    NSArray *uvcDevices = [[UVCController uvcControllers] retain];;
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
     //
-    if( uvcDevices == NULL )
-        uvcDevices = [[UVCController uvcControllers] retain];;
-    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
     //
     IOUSBDevRequest controlRequest = {
                         .bmRequestType = USBmakebmRequestType(kUSBIn, kUSBClass, kUSBInterface),
@@ -416,10 +416,10 @@ int UVCUtilReadPixioButtonStatus(int deviceIndex)
     if( UVCUtilWriteExtensionUnit(deviceIndex, 0x01, 0x06, packet, 8) == FALSE )
         return -1;
     if( UVCUtilWriteExtensionUnit(deviceIndex, 0x01, 0x06, packet2, 8) == FALSE )
-        return -1;
+        return -2;
     memset(packetBuf, 0, 8);
     if( UVCUtilReadExtensionUnit(deviceIndex, 0x02, 0x06, packetBuf, 8) == FALSE )
-        return -1;
+        return -3;
     return packetBuf[2];
 }
 
