@@ -372,10 +372,9 @@ int UVCUtilSetControlValue(int deviceIndex, const char *controlName, char *value
 
 BOOL UVCUtilWriteExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packet, int packetLen)
 {
-    if( g_uvcDevices == NULL )
-        g_uvcDevices = [[UVCController uvcControllers] retain];;
+    NSArray *uvcDevices = [[UVCController uvcControllers] retain];;
     //
-    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
+    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
     //
     IOUSBDevRequest controlRequest = {
                         .bmRequestType = USBmakebmRequestType(kUSBOut, kUSBClass, kUSBInterface),
@@ -391,9 +390,11 @@ BOOL UVCUtilWriteExtensionUnit(int deviceIndex, int bControlId, int bUnitId, uns
 
 BOOL UVCUtilReadExtensionUnit(int deviceIndex, int bControlId, int bUnitId, unsigned char *packetBuf, int packetBufLen)
 {
-    if( g_uvcDevices == NULL )
-        g_uvcDevices = [[UVCController uvcControllers] retain];;
-    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
+    NSArray *uvcDevices = [[UVCController uvcControllers] retain];;
+    //
+    if( uvcDevices == NULL )
+        uvcDevices = [[UVCController uvcControllers] retain];;
+    UVCController *targetDevice = [uvcDevices objectAtIndex:deviceIndex];
     //
     IOUSBDevRequest controlRequest = {
                         .bmRequestType = USBmakebmRequestType(kUSBIn, kUSBClass, kUSBInterface),
