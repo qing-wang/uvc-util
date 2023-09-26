@@ -40,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		26446DDC2AC291F1008AAFB8 /* uvc-util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "uvc-util.h"; path = "src/uvc-util.h"; sourceTree = SOURCE_ROOT; };
 		3B79C7751D245EAD004A5C35 /* uvc-util.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "uvc-util.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B79C7801D245ED5004A5C35 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		3B7C3E1B1D2C384100122FB8 /* uvc-util-10_9 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "uvc-util-10_9"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,6 +100,7 @@
 				3BB7CF8B1D2ED005009D6F42 /* UVCType.m */,
 				3BB7CF8C1D2ED005009D6F42 /* UVCValue.h */,
 				3BB7CF8D1D2ED005009D6F42 /* UVCValue.m */,
+				26446DDC2AC291F1008AAFB8 /* uvc-util.h */,
 			);
 			name = src;
 			path = "uvc-util";

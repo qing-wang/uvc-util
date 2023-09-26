@@ -14,9 +14,12 @@
 
 #import <Foundation/Foundation.h>
 #include <getopt.h>
+#include <string.h>
 
 #import "UVCController.h"
 #import "UVCValue.h"
+
+#include "uvc-util.h"
 
 //
 
@@ -302,6 +305,32 @@ int UVCUtilFindDeviceIndexByName(const char *deviceName)
         }
     }
     return (int) deviceIndex;
+}
+
+// summary is an array of char * with count 5: min, max, step, default, current
+// the buffer size of the element must be sufficient enough, for instance 64
+
+int UVCUtilGetControllSummary(int deviceIndex, const char *controlName, struct UVCUtilValue* summary)
+{
+    if( g_uvcDevices == NULL )
+        g_uvcDevices = [[UVCController uvcControllers] retain];;
+    //
+    if( !g_uvcDevices )
+        return -1;
+    if( deviceIndex >= [g_uvcDevices count]  )
+        return -2;
+    UVCController *targetDevice = [g_uvcDevices objectAtIndex:deviceIndex];
+    if( !targetDevice )
+        return -3;
+    UVCControl *control = [targetDevice controlWithName:[NSString stringWithCString:controlName encoding:NSASCIIStringEncoding]];
+    if( control == nil )
+        return -4;
+    strcpy(summary->minimum, [[[control minimum] stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
+    strcpy(summary->maximum, [[[control maximum] stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
+    strcpy(summary->stepSize, [[[control stepSize] stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
+    strcpy(summary->defaultValue, [[[control defaultValue] stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
+    strcpy(summary->currentValue, [[[control currentValue] stringValue] cStringUsingEncoding:NSASCIIStringEncoding]);
+    return 0;
 }
 
 int UVCUtilGetControlValue(int deviceIndex, const char *controlName, char *valueBuf)
